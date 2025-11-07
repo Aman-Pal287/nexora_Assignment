@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { asyncloadproducts } from "../store/actions/productAction";
+import { asyncAddToCart } from "../store/actions/cartAction";
+import { toast } from "react-toastify";
 
 export default function Product() {
   const dispatch = useDispatch();
@@ -9,7 +11,7 @@ export default function Product() {
 
   useEffect(() => {
     dispatch(asyncloadproducts());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -26,10 +28,9 @@ export default function Product() {
             <div
               key={p._id}
               style={{
-                border: "1px solid #eee",
+                border: "1px solid #ddd",
                 borderRadius: "10px",
                 padding: "16px",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
                 textAlign: "center",
               }}
             >
@@ -43,16 +44,13 @@ export default function Product() {
                   borderRadius: "8px",
                 }}
               />
-              <h3 style={{ fontWeight: "bold", margin: "10px 0" }}>
-                {p.title}
-              </h3>
-              <p style={{ color: "#666", fontSize: "14px" }}>
-                {p.description?.slice(0, 60)}...
-              </p>
-              <p style={{ fontWeight: "bold", marginTop: "8px" }}>
-                ₹{p.price.amount}
-              </p>
+              <h3>{p.title}</h3>
+              <p>₹{p.price.amount}</p>
               <button
+                onClick={() => {
+                  dispatch(asyncAddToCart(p._id, 1));
+                  toast.success("added to card");
+                }}
                 style={{
                   marginTop: "10px",
                   padding: "8px 16px",
@@ -62,7 +60,6 @@ export default function Product() {
                   color: "#fff",
                   cursor: "pointer",
                 }}
-                onClick={() => alert(`${p.title} added to cart (dummy)`)}
               >
                 Add to Cart
               </button>

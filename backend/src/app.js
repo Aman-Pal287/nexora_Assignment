@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const productRoutes = require("./routes/product.route");
+const cartRoutes = require("./routes/cart.routes");
 const app = express();
 
 app.use(express.json());
@@ -11,5 +12,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 
 module.exports = app;

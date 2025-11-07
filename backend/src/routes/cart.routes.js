@@ -12,6 +12,7 @@ router.post("/", cartController.addItemToCart);
 /* DELETE /api/cart/:id */
 router.delete("/:id", cartController.removeItemFromCart);
 
-
+/* PATCH /api/cart/decrement/:id */
+router.patch("/decrement/:id", cartController.decrementItemInCart);
 
 module.exports = router;

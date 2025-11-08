@@ -7,11 +7,11 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="font-[s-bold] bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Brand */}
         <Link to="/" className="text-2xl font-bold text-gray-900">
-          Vibe<span className="text-indigo-600">Commerce</span>
+          Vibe<span className="">Commerce</span>
         </Link>
 
         {/* Desktop Links */}

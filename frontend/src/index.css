@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: s-bold;
+  src: url(../public/Fonts/Satoshi-Bold.otf);
+}
+@font-face {
+  font-family: s-regular;
+  src: url(../public/Fonts/Satoshi-Regular.otf);
+}

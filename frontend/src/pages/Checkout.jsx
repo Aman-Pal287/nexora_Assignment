@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { asyncCheckout } from "../store/actions/checkoutAction";
 import { useNavigate, Link } from "react-router-dom";
 import { asyncLoadCart } from "../store/actions/cartAction";
+import { toast } from "react-toastify";
 
 export default function Checkout() {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ export default function Checkout() {
   }, [dispatch]);
 
   const handleCheckout = () => {
-    if (cart.length === 0) return alert("Cart is empty!");
+    if (cart.length === 0) return toast.warning("Cart is empty!");
     const formatted = cart.map((item) => ({
       productId: item.productId._id || item.productId,
       quantity: item.quantity,
@@ -25,124 +26,137 @@ export default function Checkout() {
 
   if (receipt) {
     return (
-      <div
-        style={{
-          padding: "2rem",
-          maxWidth: "700px",
-          margin: "0 auto",
-          textAlign: "center",
-        }}
-      >
-        <h1>Checkout Successful</h1>
-        <h3>Receipt ID: {receipt.id}</h3>
-        <p>Date: {new Date(receipt.timestamp).toLocaleString()}</p>
-        <hr style={{ margin: "20px 0" }} />
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {receipt.items.map((i) => (
-            <li
-              key={i.title}
-              style={{
-                borderBottom: "1px solid #eee",
-                padding: "10px 0",
-                textAlign: "left",
-              }}
-            >
-              <strong>{i.title}</strong> × {i.quantity} — ₹{i.lineTotal}
-            </li>
-          ))}
-        </ul>
-        <h2>Total: ₹{receipt.total}</h2>
-        <p style={{ color: "gray" }}>
-          Thank you for shopping with Vibe Commerce 💫
-        </p>
-        <Link to="/">
-          <button
-            style={{
-              marginTop: "20px",
-              padding: "10px 20px",
-              border: "none",
-              background: "#111",
-              color: "#fff",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
+      <section className="font-[s-regular] bg-gradient-to-b from-gray-50 to-gray-100 py-16 px-6 min-h-screen flex items-center justify-center">
+        <div className="bg-white shadow-xl rounded-2xl p-8 max-w-xl w-full text-center border border-gray-100">
+          <h1 className="text-3xl font-extrabold text-green-600 mb-3">
+            ✅ Order Placed Successfully!
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Thank you for shopping with{" "}
+            <span className="font-semibold">Vibe Commerce</span> 💫
+          </p>
+
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 text-left mb-6">
+            <p className="text-gray-700">
+              <strong>Receipt ID:</strong> {receipt.id}
+            </p>
+            <p className="text-gray-700">
+              <strong>Date:</strong>{" "}
+              {new Date(receipt.timestamp).toLocaleString()}
+            </p>
+          </div>
+
+          <h2 className="text-lg font-semibold mb-3 text-gray-800">
+            Order Summary
+          </h2>
+          <ul className="divide-y divide-gray-200 mb-6 text-left">
+            {receipt.items.map((i) => (
+              <li
+                key={i.title}
+                className="py-2 flex justify-between items-center"
+              >
+                <span className="text-gray-700">
+                  {i.title} × {i.quantity}
+                </span>
+                <span className="font-semibold text-indigo-600">
+                  ₹{i.lineTotal}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            Total: ₹{receipt.total}
+          </h2>
+
+          <Link
+            to="/"
+            className="inline-block px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition-all"
           >
             Back to Products
-          </button>
-        </Link>
-      </div>
+          </Link>
+        </div>
+      </section>
     );
   }
 
+  //! Checkout Summary
   return (
-    <div
-      style={{
-        padding: "2rem",
-        maxWidth: "700px",
-        margin: "0 auto",
-      }}
-    >
-      <h1>🧾 Checkout</h1>
+    <section className="font-[s-regular] bg-gradient-to-b from-gray-50 to-gray-100 py-16 px-6 min-h-screen">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-10 text-center">
+          🧾 Checkout Summary
+        </h1>
 
-      {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              marginTop: "20px",
-            }}
-          >
-            <thead>
-              <tr>
-                <th style={{ textAlign: "left" }}>Product</th>
-                <th>Qty</th>
-                <th>Price</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cart.map((item) => (
-                <tr key={item._id}>
-                  <td>{item.productId?.title || "Unknown"}</td>
-                  <td>{item.quantity}</td>
-                  <td>₹{item.productId?.price?.amount || 0}</td>
-                  <td>
-                    ₹{(item.productId?.price?.amount || 0) * item.quantity}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div
-            style={{
-              textAlign: "right",
-              marginTop: "20px",
-            }}
-          >
-            <h3>Total Items: {totals.itemCount}</h3>
-            <h3>Total Quantity: {totals.totalQuantity}</h3>
-            <h2>Grand Total: ₹{totals.totalAmount}</h2>
-            <button
-              onClick={handleCheckout}
-              style={{
-                marginTop: "15px",
-                padding: "10px 20px",
-                background: "#111",
-                color: "#fff",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-              }}
+        {cart.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+            <p className="text-lg text-gray-600 mb-4">Your cart is empty.</p>
+            <Link
+              to="/"
+              className="px-5 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all"
             >
-              Place Order ✅
-            </button>
+              Go Back to Shop
+            </Link>
           </div>
-        </>
-      )}
-    </div>
+        ) : (
+          <>
+            {/* //! order table */}
+            <div className="bg-white shadow-sm rounded-2xl border border-gray-100 overflow-hidden">
+              <table className="w-full text-left min-w-[600px]">
+                <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
+                  <tr>
+                    <th className="py-3 px-6">Product</th>
+                    <th className="py-3 px-6 text-center">Qty</th>
+                    <th className="py-3 px-6 text-center">Price</th>
+                    <th className="py-3 px-6 text-center">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cart.map((item) => (
+                    <tr key={item._id} className="border-t hover:bg-gray-50">
+                      <td className="py-4 px-6 font-medium text-gray-800">
+                        {item.productId?.title || "Unknown"}
+                      </td>
+                      <td className="text-center text-gray-700">
+                        {item.quantity}
+                      </td>
+                      <td className="text-center text-gray-800 font-medium">
+                        ₹{item.productId?.price?.amount || 0}
+                      </td>
+                      <td className="text-center text-indigo-600 font-semibold">
+                        ₹{(item.productId?.price?.amount || 0) * item.quantity}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* //! ORDER TOTAL  */}
+            <div className="mt-8 flex flex-col md:flex-row justify-between items-center bg-white border border-gray-100 shadow-sm rounded-2xl p-6 gap-6">
+              <div className="text-gray-700 space-y-2">
+                <p>
+                  Total Items:{" "}
+                  <span className="font-semibold">{totals.itemCount}</span>
+                </p>
+                <p>
+                  Total Quantity:{" "}
+                  <span className="font-semibold">{totals.totalQuantity}</span>
+                </p>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Grand Total: ₹{totals.totalAmount}
+                </h2>
+              </div>
+
+              <button
+                onClick={handleCheckout}
+                className="px-8 py-3 bg-indigo-600 text-white rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-all duration-300 shadow-md"
+              >
+                Place Order 
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
   );
 }
